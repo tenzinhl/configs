@@ -35,9 +35,10 @@ source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 # ==== Keybindings ====
 
-# ctrl + left and ctrl + right do backwards/forwards a word
+# ctrl + right and ctrl + left do forwards/backwards a word.
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
+# Up + Down do prefix history search.
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
