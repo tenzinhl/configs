@@ -16,18 +16,24 @@ compinit
 # will print properly.
 PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
 
+# Unset the expansion of "!" in double quoted strings.
+setopt nobanghist
+
 # Change widget understanding of a "word" to terminate at slashes since
 # we want forward-word to stop at path separators (removes "/" from wordchars)
 WORDCHARS=${WORDCHARS/\/}
 
-# Set up zsh syntax highlighting (needs to be done before partial history search),
-# but should be done as late as possible. See original repo for reasoning.
-
 # Set up auto-completions (fish style!)
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+# Set up zsh syntax highlighting (needs to be done before partial history search),
+# but should be done as late as possible. See original repo for reasoning.
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 # Set up partial history search
 source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+# ==== Keybindings ====
 
 # ctrl + left and ctrl + right do backwards/forwards a word
 bindkey "^[[1;5C" forward-word
@@ -35,4 +41,3 @@ bindkey "^[[1;5D" backward-word
 
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
-
