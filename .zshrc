@@ -1,3 +1,8 @@
+# General Notes: There's MANY zsh startup script locations
+# that it checks. https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set
+# It seems by default the PATH variable is choosing something we want, but I
+# have no idea how (it may be an interaction with VSCode).
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
