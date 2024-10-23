@@ -2,6 +2,10 @@
 # that it checks. https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set
 # It seems by default the PATH variable is choosing something we want, but I
 # have no idea how (it may be an interaction with VSCode).
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
