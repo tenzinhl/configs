@@ -51,3 +51,7 @@ bindkey "^[[1;5D" backward-word
 # Up + Down do prefix history search.
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
+
+# Additional way to bind up + down that works in some environemnts where ^[[A doesn't work.
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
