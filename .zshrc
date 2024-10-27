@@ -25,6 +25,12 @@ compinit
 # will print properly.
 PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
 
+# Set the terminal to xterm-256color so that colors work properly (in some
+# old and rare environments it gets set to non 256 color which messes with
+# colors used by things like zsh suggestions). If colors have issues you can
+# try unsetting this.)
+TERM='xterm-256color'
+
 # Unset the expansion of "!" in double quoted strings.
 setopt nobanghist
 
