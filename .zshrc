@@ -32,6 +32,8 @@ setopt nobanghist
 # we want forward-word to stop at path separators (removes "/" from wordchars)
 WORDCHARS=${WORDCHARS/\/}
 
+# ==== ZSH Extensions ====
+
 # Set up auto-completions (fish style!)
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
@@ -48,6 +50,12 @@ source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
+# alt + left + alt + right do forwards/backwards a word.
+bindkey "^[f" forward-word
+bindkey "^[b" backward-word
+bindkey "^[^[[D" backward-word
+bindkey "^[^[[C" forward-word
+
 # Up + Down do prefix history search.
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
@@ -55,3 +63,8 @@ bindkey "^[[B" history-substring-search-down
 # Additional way to bind up + down that works in some environemnts where ^[[A doesn't work.
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+
+# ==== Fuzzy Finding ====
+
+# Use fzf for fuzzy finding.
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
