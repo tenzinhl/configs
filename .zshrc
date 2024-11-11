@@ -13,17 +13,54 @@ HISTSIZE=1000
 SAVEHIST=1000
 bindkey -e
 # End of lines configured by zsh-newuser-install
-# The following lines were added by compinstall
-zstyle :compinstall filename '/homes/iws/tenzinhl/.zshrc'
 
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
+# ==========
+# PROMPT SETUP
+# ==========
+
+setopt PROMPT_SUBST
+
+# Function to shorten path like Fish shell
+function shortened_path() {
+    local path_components=(${(s:/:)PWD})
+    local result=""
+    
+    # Handle home directory
+    if [[ $PWD == $HOME* ]]; then
+        result="~"
+        path_components=(${path_components[@]:${#${(s:/:)HOME}}})
+    elif [[ $PWD == "/" ]]; then
+        echo "/"
+        return
+    fi
+    
+    # Shorten all but the last component
+    for ((i=1; i<${#path_components[@]}; i++)); do
+        result+="/${path_components[i][1]}"
+    done
+    
+    # Add the last component in full
+    if ((${#path_components[@]} > 0)); then
+        result+="/${path_components[-1]}"
+    fi
+    
+    echo ${result}  # Remove leading slash if present
+}
+
+# This is a special zsh function that is called before each prompt is displayed. Set any variables
+# that you want to use in your prompt here.
+function precmd() {
+    shortened_path="$(shortened_path)"
+}
 
 # Somewhere along the line the PROMPT var is being set to something
 # that's bash-style, so we need to explicitly set it to something that zsh
 # will print properly.
-PROMPT='%F{green}%n@%m%f %F{blue}%~%f%(?..%F{red} [%?]%f)> '
+PROMPT='%F{green}%n@%m%f %F{blue}${shortened_path}%f%(?..%F{red} [%?]%f)> '
+
+# ===========
+# COLORS/ZSH OPTS
+# ===========
 
 # Set the terminal to xterm-256color so that colors work properly (in some
 # old and rare environments it gets set to non 256 color which messes with
