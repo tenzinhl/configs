@@ -23,7 +23,7 @@ compinit
 # Somewhere along the line the PROMPT var is being set to something
 # that's bash-style, so we need to explicitly set it to something that zsh
 # will print properly.
-PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
+PROMPT='%F{green}%n@%m%f %F{blue}%~%f%(?..%F{red} [%?]%f)> '
 
 # Set the terminal to xterm-256color so that colors work properly (in some
 # old and rare environments it gets set to non 256 color which messes with
