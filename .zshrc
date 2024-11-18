@@ -14,11 +14,21 @@ SAVEHIST=1000
 bindkey -e
 # End of lines configured by zsh-newuser-install
 
-# Enable completion
+# Generate and use LS_COLORS
+if type dircolors > /dev/null 2>&1; then
+    eval "$(dircolors -b)"
+    zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+else
+    export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
+    zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+fi
+
+# Enable completion (some config stolen from https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#fzf-tab)
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select # Menu selection for completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # Case insensitive completion
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} # file colors
 
 # ==========
 # PROMPT SETUP
