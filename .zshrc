@@ -14,6 +14,12 @@ SAVEHIST=1000
 bindkey -e
 # End of lines configured by zsh-newuser-install
 
+# Enable completion
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select # Menu selection for completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # Case insensitive completion
+
 # ==========
 # PROMPT SETUP
 # ==========
@@ -99,7 +105,7 @@ bindkey "^[b" backward-word
 bindkey "^[^[[D" backward-word
 bindkey "^[^[[C" forward-word
 
-# Up + Down do prefix history search.
+# Up + Down do substring history search.
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 
