@@ -123,7 +123,26 @@ bindkey "^[[B" history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-# ==== Fuzzy Finding ====
-
+# ==============
+# FZF SETUP
+# ==============
 # Use fzf for fuzzy finding.
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ -f ~/.fzf.zsh ]; then
+    source ~/.fzf.zsh
+
+    # Set ctrl + T to search from typed prefix https://github.com/junegunn/fzf/issues/3195
+    export FZF_COMPLETION_TRIGGER=''
+    bindkey '^T' fzf-completion
+    bindkey '^I' $fzf_default_completion
+
+    _fzf_comprun() {
+    local command=$1
+    shift
+    case "$command" in
+        cd)           fzf --preview 'tree -C {} | head -200'   "$@" ;;
+        export|unset) fzf --preview "eval 'echo \$'{}"         "$@" ;;
+        ssh)          fzf --preview 'dig {}'                   "$@" ;;
+        *)            fzf --preview 'cat -n {}' "$@" ;;
+    esac
+    }
+fi
