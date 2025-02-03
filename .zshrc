@@ -106,15 +106,25 @@ WORDCHARS=${WORDCHARS/\/}
 
 # ==== ZSH Extensions ====
 
-# Set up auto-completions (fish style!)
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ ! -d ~/.zsh/ ]; then
+    echo "Missing zsh extension folder '~/.zsh'. Run zsh_setup.sh to install."
+else
+    # Set up auto-completions (fish style!)
+    if [ -f ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+        source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+    fi
 
-# Set up zsh syntax highlighting (needs to be done before partial history search),
-# but should be done as late as possible. See original repo for reasoning.
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    # Set up zsh syntax highlighting (needs to be done before partial history search),
+    # but should be done as late as possible. See original repo for reasoning.
+    if [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+        source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    fi
 
-# Set up partial history search
-source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+    # Set up partial history search
+    if [ -f ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
+        source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+    fi
+fi
 
 # ==== Keybindings ====
 
@@ -140,8 +150,8 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 # FZF SETUP
 # ==============
 # Use fzf for fuzzy finding.
-if [ -f ~/.fzf.zsh ]; then
-    source ~/.fzf.zsh
+if type "fzf" > /dev/null; then
+    source <(fzf --zsh)
 
     # Set ctrl + T to search from typed prefix https://github.com/junegunn/fzf/issues/3195
     export FZF_COMPLETION_TRIGGER=''
