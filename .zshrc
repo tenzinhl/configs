@@ -97,6 +97,10 @@ PROMPT='%F{green}%n@%m%f %F{blue}${shortened_path}%f%(?..%F{red} [%?]%f)> '
 # try unsetting this.)
 TERM='xterm-256color'
 
+# Helps with making autosuggestions look faded in VSCode's integrated terminal
+# (where it otherwise sometimes does not).
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
+
 # Unset the expansion of "!" in double quoted strings.
 setopt nobanghist
 
