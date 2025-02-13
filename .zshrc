@@ -125,6 +125,7 @@ else
     fi
 
     # Set up partial history search
+    HISTORY_SUBSTRING_SEARCH_FUZZY='true'
     if [ -f ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
         source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
     fi
