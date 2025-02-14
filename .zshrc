@@ -154,6 +154,10 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 # ==============
 # FZF SETUP
 # ==============
+
+# If following fzf's install from git instructions, this will get fzf in PATH.
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # Use fzf for fuzzy finding.
 if type "fzf" > /dev/null; then
     source <(fzf --zsh)
