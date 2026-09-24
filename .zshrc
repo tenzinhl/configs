@@ -2,7 +2,11 @@
 # that it checks. https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set
 # It seems by default the PATH variable is choosing something we want, but I
 # have no idea how (it may be an interaction with VSCode).
-alias ls='ls --color=auto'
+# ls --color=auto is GNU-only; macOS's BSD ls uses -G instead.
+case "$OSTYPE" in
+    darwin*) alias ls='ls -G' ;;
+    *)       alias ls='ls --color=auto' ;;
+esac
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
@@ -12,6 +16,7 @@ HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 bindkey -e
+bindkey '^U' backward-kill-line
 # End of lines configured by zsh-newuser-install
 
 # HISTORY
@@ -104,9 +109,10 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
 # Unset the expansion of "!" in double quoted strings.
 setopt nobanghist
 
-# Change widget understanding of a "word" to terminate at slashes since
-# we want forward-word to stop at path separators (removes "/" from wordchars)
-WORDCHARS=${WORDCHARS/\/}
+# Change widget understanding of a "word" to terminate at slashes, dashes, and
+# underscores since we want forward-word to stop at path separators and
+# treat kebab/snake_case segments as separate words (removes "/", "-", "_" from wordchars)
+WORDCHARS=${WORDCHARS//[\/_.-]/}
 
 # ==== ZSH Extensions ====
 
@@ -151,6 +157,16 @@ bindkey "^[[B" history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
+# Homebrew install (has to be done before fzf setup since that relies on brew bins being in PATH)
+# Locate brew across the common install locations: Apple Silicon Mac, Intel Mac, Linuxbrew.
+for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+    if [ -x "$brew_bin" ]; then
+        eval "$("$brew_bin" shellenv zsh)"
+        break
+    fi
+done
+unset brew_bin
+
 # ==============
 # FZF SETUP
 # ==============
@@ -178,3 +194,5 @@ if type "fzf" > /dev/null; then
     esac
     }
 fi
+
+export PATH="$HOME/.local/bin:$PATH"
