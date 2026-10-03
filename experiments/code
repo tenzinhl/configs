@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# This script is intended to create an alias for `code` that will try and
+# locate the VSCode CLI for remote VSCode server instances and launch it.
+# Normally VSCode injects the correct PATH + ENV Vars to do this in their
+# integrated terminal, but doing this supports opening files in VSCode from
+# CLI in other contexts (e.g.: when in a tmux session).
+# Seems to work pretty well, fully vibe coded by Claude and Gemini.
+
+
+# Dynamically find the most recent VS Code Server CLI binary
+RECENT_SERVER=$(ls -td ~/.vscode-server/cli/servers/*/ 2>/dev/null | grep -v '\.staging/$' | head -n1)
+
+if [[ -z "${RECENT_SERVER}" ]]; then
+    echo "Error: VS Code Server CLI folder not found in ~/.vscode-server/cli/servers/"
+    exit 1
+fi
+
+# Print the VS Code IPC sockets that currently have a listener. Stale sockets
+# from closed windows are left behind on disk, so existence alone isn't enough.
+live_ipc_sockets() {
+    local dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    ss -xlH 2>/dev/null | grep -o "${dir}/vscode-ipc-[^ ]*\.sock" | sort -u
+}
+
+# If VSCODE_IPC_HOOK_CLI is unset or points at a dead socket (e.g. a stale
+# value inherited by a long-lived tmux session), use the most recently
+# created live socket.
+if [[ -z "${VSCODE_IPC_HOOK_CLI}" ]] || ! live_ipc_sockets | grep -qxF "${VSCODE_IPC_HOOK_CLI}"; then
+    mapfile -t LIVE_SOCKETS < <(live_ipc_sockets)
+    if [[ ${#LIVE_SOCKETS[@]} -gt 0 ]]; then
+        NEWEST_SOCKET=$(ls -t "${LIVE_SOCKETS[@]}" | head -n1)
+        if [[ ${#LIVE_SOCKETS[@]} -gt 1 ]]; then
+            echo "Note: picked newest of ${#LIVE_SOCKETS[@]} live VS Code IPC sockets: ${NEWEST_SOCKET}" >&2
+        fi
+        export VSCODE_IPC_HOOK_CLI="${NEWEST_SOCKET}"
+    fi
+fi
+
+# Run the official remote-cli executable
+"${RECENT_SERVER}/server/bin/remote-cli/code" "$@"
