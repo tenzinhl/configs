@@ -81,16 +81,44 @@ function shortened_path() {
     echo ${result}  # Remove leading slash if present
 }
 
-# This is a special zsh function that is called before each prompt is displayed. Set any variables
-# that you want to use in your prompt here.
-function precmd() {
-    shortened_path="$(shortened_path)"
+zmodload zsh/datetime  # for $EPOCHSECONDS
+autoload -Uz add-zsh-hook
+
+# Called just before each command runs; record its start time.
+function _cmd_timer_preexec() {
+    cmd_start_time=$EPOCHSECONDS
 }
+
+# Format a number of seconds as e.g. "1h2m3s", "4m5s", "6s".
+function human_duration() {
+    local total=$1 out=""
+    local h=$((total / 3600)) m=$((total % 3600 / 60)) s=$((total % 60))
+    ((h > 0)) && out+="${h}h"
+    ((h > 0 || m > 0)) && out+="${m}m"
+    out+="${s}s"
+    echo $out
+}
+
+# Called before each prompt is displayed. Set any variables you want to use in your prompt here.
+function _prompt_precmd() {
+    shortened_path="$(shortened_path)"
+
+    # Show how long the last command took if it ran for more than 3s
+    cmd_duration=""
+    if [[ -n $cmd_start_time ]]; then
+        local elapsed=$((EPOCHSECONDS - cmd_start_time))
+        ((elapsed > 3)) && cmd_duration=" %F{yellow}$(human_duration $elapsed)%f"
+        unset cmd_start_time
+    fi
+}
+
+add-zsh-hook preexec _cmd_timer_preexec
+add-zsh-hook precmd _prompt_precmd
 
 # Somewhere along the line the PROMPT var is being set to something
 # that's bash-style, so we need to explicitly set it to something that zsh
 # will print properly.
-PROMPT='%F{green}%n@%m%f %F{blue}${shortened_path}%f%(?..%F{red} [%?]%f)> '
+PROMPT='%F{green}%n@%m%f %F{blue}${shortened_path}%f${cmd_duration}%(?..%F{red} [%?]%f)> '
 
 # ===========
 # COLORS/ZSH OPTS
