@@ -26,20 +26,25 @@ clone_if_not_exists https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.
 # Install zsh-history-substring-search
 clone_if_not_exists https://github.com/zsh-users/zsh-history-substring-search.git ~/.zsh/zsh-history-substring-search
 
-# Backup existing .zshrc if it exists
-if [ -f ~/.zshrc ]; then
-    backup_file=~/.zshrc.backup
-    counter=1
-    while [ -f "$backup_file" ]; do
-        backup_file=~/.zshrc.backup.$counter
-        ((counter++))
-    done
-    mv ~/.zshrc "$backup_file"
-    echo "Existing .zshrc backed up to $backup_file"
-fi
+# Hook the shared config into ~/.zshrc by sourcing it from this repo (rather than
+# copying it over), so ~/.zshrc stays the place for machine-specific overrides and
+# edits to the shared config apply directly to this repo.
+shared_zshrc="${${(%):-%x}:A:h}/.zshrc"
+source_line="[[ -f \"$shared_zshrc\" ]] && source \"$shared_zshrc\""
 
-# Copy the new .zshrc to the home directory
-cp .zshrc ~/.zshrc
-echo "New .zshrc copied to home directory"
+if [ -f ~/.zshrc ] && grep -qF "$source_line" ~/.zshrc; then
+    echo "~/.zshrc already sources $shared_zshrc. Skipping."
+else
+    if [ -f ~/.zshrc ]; then
+        echo "Appending source line to existing ~/.zshrc. If it was copied from this repo by an"
+        echo "older version of this script, remove the duplicated content from it."
+    fi
+    cat >> ~/.zshrc <<EOS
+
+# Shared zsh config (added by zsh_setup.sh). Put machine-specific overrides below this line.
+$source_line
+EOS
+    echo "~/.zshrc now sources $shared_zshrc"
+fi
 
 echo "ZSH setup complete. Please restart your terminal or run 'source ~/.zshrc' to apply changes."

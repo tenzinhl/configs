@@ -1,3 +1,6 @@
+# Shared zsh config. Not meant to be copied to ~/.zshrc: zsh_setup.sh adds a line to
+# ~/.zshrc that sources this file, so personal overrides can live in ~/.zshrc.
+
 # General Notes: There's MANY zsh startup script locations
 # that it checks. https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set
 # It seems by default the PATH variable is choosing something we want, but I
